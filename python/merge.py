@@ -32,7 +32,7 @@ def merge(keyword, file):
                     row = w[i]
                     if keyword in row[0].value.lower():
                         titles.append(row[0].value)
-                        links.append(row[4].value)
+                        links.append(row[3].value)
 
             elif sheet == 'Bilibili':
                 for i in range(row_num):

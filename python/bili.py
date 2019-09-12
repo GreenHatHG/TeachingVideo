@@ -59,6 +59,7 @@ def getContext(text):
 
 #保存到excel
 def save_to_excel(file):
+    global wb
     try:
         wb = openpyxl.load_workbook(file)
 
@@ -76,7 +77,9 @@ def save_to_excel(file):
         wb.close()
         print('写入excel成功')
     except Exception as e:
-        print('写入excel失败')
+        print('写入excel失败，只写入部分数据，可能是因为写入的数据量过大')
+        wb.save(file)
+        wb.close()
         print(e)
 
 
@@ -84,7 +87,7 @@ def start(keyword, file):
     #处理除英文外的字符
     keyword = urllib.parse.quote(keyword)
     pattern = "https://search.bilibili.com/all?keyword=" + keyword + "&page="
-    for i in range(1, 2):
+    for i in range(1, 100):
         url = pattern + str(i)
         text = getText(url)
         if not getContext(text):

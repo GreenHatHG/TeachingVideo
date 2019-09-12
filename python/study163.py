@@ -15,8 +15,6 @@ productName = []
 score = []
 #价格
 price = []
-#描述
-description = []
 #链接
 link = []
 
@@ -57,7 +55,6 @@ def getContent(keyword, index):
                         score.append(item["score"])
                         price.append(
                             item['discountPrice'] if item['discountPrice'] is not None else item['originalPrice'])
-                        description.append(item["description"])
                         link.append("https://study.163.com/course/introduction/" + str(item['productId']) + ".htm")
             return True
         else:
@@ -76,6 +73,7 @@ def getList(content_json):
 
 #保存信息到excel
 def save_to_excel(file):
+    global wb
     try:
         wb = openpyxl.load_workbook(file)
 
@@ -86,14 +84,16 @@ def save_to_excel(file):
         ws = wb['网易云课堂']
 
         #写入excel
-        ws.append(('名称', '评分', '价格', '描述', '链接'))
+        ws.append(('名称', '评分', '价格', '链接'))
         for i in range(len(productName)):
-            ws.append((productName[i], score[i], price[i], description[i], link[i]))
+            ws.append((productName[i], score[i], price[i], link[i]))
         wb.save(file)
         wb.close()
         print('写入excel成功')
     except Exception as e:
-        print('写入excel失败')
+        print('写入excel失败，只写入部分数据，可能是因为写入的数据量过大')
+        wb.save(file)
+        wb.close()
         print(e)
 
 
