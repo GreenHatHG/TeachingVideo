@@ -1,26 +1,36 @@
 # -*- coding: UTF-8 -*-
+#爬取网易云课堂主代码
 
 import requests
 import time
 import json
 import openpyxl
 
+#网易云课堂视频信息接口
 url = "https://study.163.com/p/search/studycourse.json"
 
-# 获取到全部数据
+#名称
 productName = []
+#评分
 score = []
+#价格
 price = []
+#描述
 description = []
+#链接
 link = []
 
 
 def getContent(keyword, index):
+    #请求接口所需要的数据
     payload = {
         "activityId": 0,
+        # 关键字
         "keyword": keyword,
         "orderType": 5,
+        #第几页
         "pageIndex": index,
+        #每一页数据量
         "pageSize": 50,
         "priceType": -1,
         "qualityType": 0,
@@ -34,6 +44,7 @@ def getContent(keyword, index):
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36"
     }
     try:
+        #请求接口并且得到数据进行提取
         res = requests.post(url, json=payload, headers=headers)
         content_json = json.loads(res.text)
         if content_json['result']['query'] is not None and content_json['code'] == 0:
@@ -63,15 +74,18 @@ def getList(content_json):
     else:
         return None
 
-
+#保存信息到excel
 def save_to_excel(file):
     try:
         wb = openpyxl.load_workbook(file)
 
+        # 清空excel历史数据
         if '网易云课堂' in str(wb.sheetnames):
             wb.remove(wb['网易云课堂'])
         wb.create_sheet('网易云课堂')
         ws = wb['网易云课堂']
+
+        #写入excel
         ws.append(('名称', '评分', '价格', '描述', '链接'))
         for i in range(len(productName)):
             ws.append((productName[i], score[i], price[i], description[i], link[i]))
@@ -84,7 +98,7 @@ def save_to_excel(file):
 
 
 def start(keyword, file):
-    for i in range(1, 2):
+    for i in range(1, 100):
         if not getContent(keyword, i):
             break
         time.sleep(2)

@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+# 爬取bili主代码
 
 import urllib.parse
 import re
@@ -7,13 +8,17 @@ import openpyxl
 import time
 from bs4 import BeautifulSoup
 
+# 名称
 titles = []
+# 播放量
 watch_nums = []
+# 上传时间
 times = []
+# 链接
 links = []
-filename = "../resource/data.xls"
 
 
+#得到网页源码
 def getText(url):
     try:
         kv = {'user-agent': 'Mozilla/5.0'}
@@ -24,6 +29,7 @@ def getText(url):
     except:
         return '错误'
 
+#处理网页源码
 def getContext(text):
     global titles, watch_nums, times, links
     soup = BeautifulSoup(text, 'lxml')
@@ -51,15 +57,18 @@ def getContext(text):
 
         return True
 
-
+#保存到excel
 def save_to_excel(file):
     try:
         wb = openpyxl.load_workbook(file)
 
+        # 清空excel历史数据
         if 'Bilibili' in str(wb.sheetnames):
             wb.remove(wb['Bilibili'])
         wb.create_sheet('Bilibili')
         ws = wb['Bilibili']
+
+        # 写入excel
         ws.append(('名称', '播放量', '上传时间', '链接'))
         for i in range(len(titles)):
             ws.append((titles[i], watch_nums[i], times[i], links[i]))
@@ -72,6 +81,7 @@ def save_to_excel(file):
 
 
 def start(keyword, file):
+    #处理除英文外的字符
     keyword = urllib.parse.quote(keyword)
     pattern = "https://search.bilibili.com/all?keyword=" + keyword + "&page="
     for i in range(1, 2):

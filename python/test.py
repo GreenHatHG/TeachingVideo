@@ -1,7 +1,9 @@
 # -*- coding: UTF-8 -*-
+# 用于检查需要爬取的信息能不能直接通过抓取网页源码得到
 
 import requests
 
+#得到网页源码
 def getText(url):
     try:
         kv = {'user-agent': 'Mozilla/5.0'}

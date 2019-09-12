@@ -2,7 +2,7 @@
 
 import openpyxl
 
-
+# 检查resource文件夹下有没有xlsx文件，没有的话则创建
 def check(file):
     try:
         openpyxl.load_workbook(file)
