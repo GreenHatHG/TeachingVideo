@@ -1,4 +1,7 @@
+# -*- coding: UTF-8 -*-
+
 import openpyxl
+
 
 def check(file):
     try:
@@ -7,7 +10,6 @@ def check(file):
         wb = openpyxl.Workbook()
         wb.save(file)
         wb.close()
-
 
 def printStart(text):
     print("--------------------------------")

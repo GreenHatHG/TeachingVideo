@@ -1,3 +1,6 @@
+# -*- coding: UTF-8 -*-
+
+import urllib.parse
 import re
 import requests
 import openpyxl
@@ -21,17 +24,19 @@ def getText(url):
     except:
         return '错误'
 
-
 def getContext(text):
     global titles, watch_nums, times, links
     soup = BeautifulSoup(text, 'lxml')
-    li = soup.select("#all-list > div.flow-loader > ul > li:nth-child(n)")
-    if (li is None):
+    li = soup.select(".mixin-list > ul > li:nth-child(n)")
+    if len(li) == 0:
+        li = soup.select(".flow-loader > ul > li:nth-child(n)")
+
+    if 0 >= len(li) or li is None:
         return False
     else:
         for item in li:
             title = item.select("div > div.headline.clearfix > a")
-            print(title)
+            print(title[0]['title'])
             titles.append(title[0]['title'])
 
             watch_num = item.select("div > div.tags > span.so-icon.watch-num")
@@ -67,8 +72,9 @@ def save_to_excel(file):
 
 
 def start(keyword, file):
+    keyword = urllib.parse.quote(keyword)
     pattern = "https://search.bilibili.com/all?keyword=" + keyword + "&page="
-    for i in range(1, 100):
+    for i in range(1, 2):
         url = pattern + str(i)
         text = getText(url)
         if not getContext(text):

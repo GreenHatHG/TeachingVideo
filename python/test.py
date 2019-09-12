@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 import requests
 
 def getText(url):
@@ -12,5 +14,5 @@ def getText(url):
 
 
 if __name__ == '__main__':
-    url = "https://search.bilibili.com/all?keyword=spring&page=2"
+    url = "https://www.imooc.com/search/?words=java&page=1"
     print(getText(url))

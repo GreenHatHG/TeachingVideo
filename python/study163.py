@@ -1,9 +1,10 @@
+# -*- coding: UTF-8 -*-
+
 import requests
 import time
 import json
 import openpyxl
 
-referer = "https://study.163.com/courses-search?keyword="
 url = "https://study.163.com/p/search/studycourse.json"
 
 # 获取到全部数据
@@ -30,18 +31,17 @@ def getContent(keyword, index):
         "accept": "application/json",
         "origin": "https://study.163.com",
         "content-type": "application/json",
-        "referer": referer,
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36"
     }
     try:
         res = requests.post(url, json=payload, headers=headers)
         content_json = json.loads(res.text)
-        print(content_json)
         if content_json['result']['query'] is not None and content_json['code'] == 0:
             data = getList(content_json)
             if data is not None:
                 for item in data:
                     if len(item) > 0:
+                        print(item["productName"])
                         productName.append(item["productName"])
                         score.append(item["score"])
                         price.append(
@@ -84,9 +84,7 @@ def save_to_excel(file):
 
 
 def start(keyword, file):
-    global referer
-    referer += keyword
-    for i in range(1, 100):
+    for i in range(1, 2):
         if not getContent(keyword, i):
             break
         time.sleep(2)
